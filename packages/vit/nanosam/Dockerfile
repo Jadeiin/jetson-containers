@@ -24,7 +24,7 @@ RUN git clone https://github.com/NVIDIA-AI-IOT/nanosam && \
     python3 setup.py develop --user
 
 # 3. Build the TensorRT engine for the mask decoder
-RUN pip3 install timm
+RUN pip3 install --verbose --no-cache-dir timm
 
 #RUN cd /opt/nanosam && \
 #    mkdir data && \
