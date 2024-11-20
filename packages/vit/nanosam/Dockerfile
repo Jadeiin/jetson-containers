@@ -57,7 +57,7 @@ RUN wget --quiet --show-progress --progress=bar:force:noscroll --no-check-certif
         --fp16
 
 # 5. Run the basic usage example
-RUN pip3 install matplotlib
+RUN pip3 install --no-cache-dir -U matplotlib
 RUN cd /opt/nanosam/ && \
     python3 examples/basic_usage.py \
         --image_encoder=data/resnet18_image_encoder.engine \
