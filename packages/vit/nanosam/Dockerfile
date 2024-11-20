@@ -35,7 +35,7 @@ RUN pip3 install timm
 
 RUN mkdir /opt/nanosam/data && \
     wget --quiet --show-progress --progress=bar:force:noscroll --no-check-certificate \
-	 https://nvidia.box.com/shared/static/ho09o7ohgp7lsqe0tcxqu5gs2ddojbis.onnx \
+	 https://files.anjara.eu/f/bbcdc90c2fa20cf4e56b4a8ee08568db9168a892233baecf9548ac880efb0c8c \
 	 -O /opt/nanosam/data/mobile_sam_mask_decoder.onnx
 
 RUN cd /opt/nanosam && \
@@ -47,10 +47,9 @@ RUN cd /opt/nanosam && \
         --maxShapes=point_coords:1x10x2,point_labels:1x10
 
 # 4. Build the TensorRT engine for the NanoSAM image encoder
-RUN pip3 install gdown && \
-    cd /opt/nanosam/data/ && \
-    gdown https://drive.google.com/uc?id=14-SsvoaTl-esC3JOzomHDnI9OGgdO2OR && \
-    ls -lh && \
+RUN wget --quiet --show-progress --progress=bar:force:noscroll --no-check-certificate \
+        https://files.anjara.eu/f/f596fde1c958781f32c0dc47574ab659fce4fd29c2847ea4ed90497a7233c3e5 \
+        -O /opt/nanosam/data/resnet18_image_encoder.onnx && \
     cd /opt/nanosam/ && \
     /usr/src/tensorrt/bin/trtexec \
         --onnx=data/resnet18_image_encoder.onnx \
