@@ -35,6 +35,7 @@ ARG LIBREALSENSE_VERSION=master
 
 RUN git clone --branch ${LIBREALSENSE_VERSION} --depth=1 https://github.com/IntelRealSense/librealsense && \
     cd librealsense && \
+    git pull origin pull/13079/head && \
     mkdir build && \
     cd build && \
     cmake \
