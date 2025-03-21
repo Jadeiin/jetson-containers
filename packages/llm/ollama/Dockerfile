@@ -1,7 +1,8 @@
 #---
-# name: ollama 
+# name: ollama
 # group: llm
 # config: config.py
+# depends: cuda
 # requires: '>=34.1.0'
 # docs: docs.md
 #---
@@ -33,11 +34,16 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* && \
     apt-get clean
 
-COPY nv_tegra_release /etc/nv_tegra_release    
+COPY nv_tegra_release /etc/nv_tegra_release
 
-RUN curl -fsSL https://ollama.com/install.sh | sh 
+#ADD https://api.github.com/repos/ollama/ollama/branches/main /tmp/ollama_version.json
+RUN curl -H "Authorization: token ${GITHUB_TOKEN}" \
+    -o /tmp/ollama_version.json \
+    https://api.github.com/repos/ollama/ollama/branches/main
 
-RUN ln -s /usr/bin/python3 /usr/bin/python 
+RUN curl -fsSL https://ollama.com/install.sh | sh
+
+RUN ln -s /usr/bin/python3 /usr/bin/python
 
 COPY start_ollama /
 

@@ -20,13 +20,26 @@ if [ $return_code != 0 ]; then
 	  python${PYTHON_VERSION}-dev
 fi
 
+# path 1:  Python 3.8-3.10 for JP5/6
+# path 2:  Python 3.6 for JP4
+# path 3:  Python 3.12 for 24.04
+distro=$(lsb_release -rs)
+
+if [ $distro = "24.04" ]; then
+   apt-get install -y --no-install-recommends python3-venv
+   python3 -m venv --system-site-packages /opt/venv
+   source /opt/venv/bin/activate
+   curl -sS https://bootstrap.pypa.io/get-pip.py | python${PYTHON_VERSION}
+elif [ $distro = "18.04" ]; then
+   curl -sS https://bootstrap.pypa.io/pip/3.6/get-pip.py | python3.6
+else
+   curl -sS https://bootstrap.pypa.io/get-pip.py | python${PYTHON_VERSION}
+fi
+
 rm -rf /var/lib/apt/lists/*
 apt-get clean
 
-curl -sS https://bootstrap.pypa.io/get-pip.py | python${PYTHON_VERSION} || \
-curl -sS https://bootstrap.pypa.io/pip/3.6/get-pip.py | python3.6
-
-ln -s /usr/bin/python${PYTHON_VERSION} /usr/local/bin/python3
+ln -f -s /usr/bin/python${PYTHON_VERSION} /usr/local/bin/python3
 #ln -s /usr/bin/pip${PYTHON_VERSION} /usr/local/bin/pip3
 
 # this was causing issues downstream (e.g. Python2.7 still around in Ubuntu 18.04, \
@@ -42,13 +55,13 @@ pip3 --version
 
 python3 -m pip install --upgrade pip pkginfo --index-url https://pypi.org/simple
 
-pip3 install --no-cache-dir --verbose --no-binary :all: psutil
-pip3 install --upgrade --no-cache-dir \
+pip3 install --no-binary :all: psutil
+pip3 install --upgrade \
    setuptools \
    packaging \
-   'Cython<3' \
+   'Cython' \
    wheel 
 
-pip3 install --upgrade --no-cache-dir --index-url https://pypi.org/simple \
+pip3 install --upgrade --index-url https://pypi.org/simple \
    twine
    

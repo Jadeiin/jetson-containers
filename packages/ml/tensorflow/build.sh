@@ -24,8 +24,8 @@ export PYTHON_LIB_PATH="$(python3 -c 'import site; print(site.getsitepackages()[
 export TF_NEED_CUDA=1
 export TF_CUDA_CLANG=1
 export CLANG_CUDA_COMPILER_PATH="/usr/lib/llvm-17/bin/clang"
-export HERMETIC_CUDA_VERSION=12.6.3
-export HERMETIC_CUDNN_VERSION=9.4.0 
+export HERMETIC_CUDA_VERSION=12.8.1
+export HERMETIC_CUDNN_VERSION=9.8.0
 export HERMETIC_CUDA_COMPUTE_CAPABILITIES=8.7
 
 
@@ -36,7 +36,7 @@ bazel build //tensorflow/tools/pip_package:wheel --action_env CLANG_CUDA_COMPILE
 twine upload --verbose /opt/tensorflow/bazel-bin/tensorflow/tools/pip_package/wheel_house/tensorflow*.whl || echo "failed to upload wheel to ${TWINE_REPOSITORY_URL}"
 
 # Install them into the container
-pip3 install --verbose --no-cache-dir /opt/tensorflow/bazel-bin/tensorflow/tools/pip_package/wheel_house/tensorflow*.whl
+pip3 install /opt/tensorflow/bazel-bin/tensorflow/tools/pip_package/wheel_house/tensorflow*.whl
 
 mv /opt/tensorflow/bazel-bin/tensorflow/tools/pip_package/wheel_house/tensorflow*.whl /opt/tensorflow/
 # Clean up all files and close bazel server

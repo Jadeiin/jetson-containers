@@ -36,13 +36,20 @@ def transformers_pypi(version, **kwargs):
 
 
 def transformers_git(version, repo='huggingface/transformers', branch=None, **kwargs):
-    version = github_latest_tag(repo) if version == 'latest' else version
 
+    if version == 'latest':
+        version = github_latest_tag(repo) 
+        if not version:
+            print(f'-- Failed to get latest Transformers github tag for {repo}')
+            return
+        
     if version.startswith('v'):
         version = version[1:]
 
     if branch is None:
-        branch = f'v{version}'
+        branch = version
+        if branch[0].isnumeric():
+            branch = 'v' + branch
 
     return _transformers(
         version,
@@ -57,5 +64,5 @@ package = [
     transformers_pypi('latest', default=(L4T_VERSION.major >= 36), requires='>=36'), # will always resolve to the latest pypi version
     transformers_pypi('4.46.3', default=(L4T_VERSION.major < 36), requires='<36'),   # 4.46.3 is the last version that supports Python 3.8
     transformers_git('latest', codename='git'),                                      # will always resolve to the latest git version from huggingface/transformers
-    transformers_git('latest', codename='nvgpt', repo='ertkonuk/transformers'),      # will always resolve to the latest git version from ertkonuk/transformers
+    transformers_git('main', requires='>=36'),                                       # will always resolve to the latest commit in main branch from github
 ]

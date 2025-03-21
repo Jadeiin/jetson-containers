@@ -25,7 +25,10 @@ if [ "$FORCE_BUILD" == "on" ]; then
 fi
 
 # install from the Jetson pypi server ($PIP_INSTALL_URL)
-pip3 install --verbose --no-cache-dir torch==${TORCH_VERSION}
+pip3 install torch==${TORCH_VERSION}
+
+# reinstall numpy<2 on CUDA < 12.8
+bash /tmp/numpy/install.sh
 
 # make sure it loads
 python3 -c 'import torch; print(f"PyTorch version: {torch.__version__}"); print(f"CUDA available:  {torch.cuda.is_available()}"); print(f"cuDNN version:   {torch.backends.cudnn.version()}"); print(torch.__config__.show());'
@@ -37,5 +40,5 @@ echo "patching _GLIBCXX_USE_CXX11_ABI in ${TORCH_CMAKE_CONFIG}"
 sed -i 's/  set(TORCH_CXX_FLAGS "-D_GLIBCXX_USE_CXX11_ABI=")/  set(TORCH_CXX_FLAGS "-D_GLIBCXX_USE_CXX11_ABI=0")/g' ${TORCH_CMAKE_CONFIG}
 
 # PyTorch C++ extensions frequently use ninja parallel builds
-pip3 install --no-cache-dir scikit-build ninja
+pip3 install scikit-build ninja
    
