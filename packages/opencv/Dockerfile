@@ -16,12 +16,14 @@ ARG OPENCV_VERSION \
     FORCE_BUILD=off
 
 ENV OPENCV_VERSION=${OPENCV_VERSION} \
-    OPENCV_URL=${OPENCV_URL}
+    OPENCV_URL=${OPENCV_URL} \
+    USE_APT=on
     
 COPY build.sh \
      install.sh \
      install_deps.sh \
      install_deb.sh \
+     install_apt.sh \
      patches.diff \
      /tmp/opencv/
 

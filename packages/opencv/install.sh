@@ -7,11 +7,15 @@ ROOT="$(dirname "$(readlink -f "$0")")"
 #$ROOT/install_deps.sh
 
 if [ "$FORCE_BUILD" == "on" ]; then
-	echo "Forcing build of opencv-python ${OPENCV_VERSION}"
-	exit 1
+    echo "Forcing build of opencv-python ${OPENCV_VERSION}"
+    exit 1
 fi
 
-if [ ! -z "$OPENCV_URL" ]; then
+# Default to apt installation
+if [ "$USE_APT" == "on" ]; then
+    echo "Installing opencv using nvidia-opencv-dev package"
+    $ROOT/install_apt.sh
+elif [ ! -z "$OPENCV_URL" ]; then
     echo "Installing opencv ${OPENCV_VERSION} from deb packages"
     $ROOT/install_deb.sh
 else
